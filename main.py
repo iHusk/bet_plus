@@ -1,4 +1,4 @@
-from prefect import flow, task
+from prefect import flow, task, get_run_logger
 from prefect.task_runners import SequentialTaskRunner
 from prefect.filesystems import GCS
 import pandas as pd
@@ -18,7 +18,6 @@ NCAA_PATH = "/home/admin/python/prefect/bet_plus/preds/preds.csv"
 
 @task(retries=2, retry_delay_seconds=10)
 def get_predictions():
-    print("Downloading ...")
     page = requests.get(URL).content
     preds = pd.read_csv(io.StringIO(page.decode('utf-8')))
     print(preds.head(5))
@@ -26,17 +25,22 @@ def get_predictions():
 
 @task
 def save_predictions(df, path):
-    print("Saving ...")
     with open(path, 'w') as csvfile:
         df.to_csv(path_or_buf=csvfile)
 
 
 @flow(task_runner=SequentialTaskRunner)
-def test_retries():
-    print("Getting predictions ...")
+def download_predictions():
+    logger = get_run_logger()
+
+    logger.info("Getting predictions ...")
     preds = get_predictions()
+    logger.info("Downloaded!")
+
+    logger.info("Saving ...")
     save_predictions(preds, NCAA_PATH)
+    logger.info(f"Saved! {NCAA_PATH}")
 #    put_predictions()
 
 if __name__ == "__main__":
-    test_retries()
+    download_predictions()
