@@ -1,0 +1,36 @@
+###
+### A complete description of a Prefect Deployment for flow 'download-predictions'
+###
+name: download-predictions
+description: null
+version: 7768f3e6dfadcca89d9aecb59c2258f7
+# The work queue that will handle this deployment's runs
+work_queue_name: main
+tags: []
+parameters: {}
+schedule: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: download-predictions
+manifest_path: null
+storage: null
+path: /home/admin/python/prefect/bet_plus
+entrypoint: main.py:download_predictions
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
